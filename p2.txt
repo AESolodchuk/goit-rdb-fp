@@ -1,0 +1,44 @@
+use pandemic;
+
+CREATE TABLE region (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    entity VARCHAR(255),
+    code VARCHAR(255)
+);
+
+INSERT INTO region (entity, code)
+SELECT DISTINCT entity, 
+       CASE WHEN code = '' THEN NULL ELSE code END AS code
+FROM source;
+
+CREATE TABLE cases (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    year INT,
+    number_yaws DOUBLE,
+    polio_cases DOUBLE,
+    cases_guinea_worm DOUBLE,
+    number_rabies DOUBLE,
+    number_malaria DOUBLE,
+    number_hiv DOUBLE,
+    number_tuberculosis DOUBLE,
+    number_smallpox DOUBLE,
+    number_cholera_cases DOUBLE,
+    region_id INT,
+    FOREIGN KEY (region_id) REFERENCES region(id)
+);
+
+INSERT INTO cases (year, number_yaws, polio_cases, cases_guinea_worm, number_rabies, number_malaria, 
+                   number_hiv, number_tuberculosis, number_smallpox, number_cholera_cases, region_id)
+SELECT s.year, 
+       CASE WHEN s.number_yaws = '' THEN NULL ELSE CAST(s.number_yaws AS DOUBLE) END,
+       CASE WHEN s.polio_cases = '' THEN NULL ELSE CAST(s.polio_cases AS DOUBLE) END,
+       CASE WHEN s.cases_guinea_worm = '' THEN NULL ELSE CAST(s.cases_guinea_worm AS DOUBLE) END,
+       CASE WHEN s.number_rabies = '' THEN NULL ELSE CAST(s.number_rabies AS DOUBLE) END,
+       CASE WHEN s.number_malaria = '' THEN NULL ELSE CAST(s.number_malaria AS DOUBLE) END,
+       CASE WHEN s.number_hiv = '' THEN NULL ELSE CAST(s.number_hiv AS DOUBLE) END,
+       CASE WHEN s.number_tuberculosis = '' THEN NULL ELSE CAST(s.number_tuberculosis AS DOUBLE) END,
+       CASE WHEN s.number_smallpox = '' THEN NULL ELSE CAST(s.number_smallpox AS DOUBLE) END,
+       CASE WHEN s.number_cholera_cases = '' THEN NULL ELSE CAST(s.number_cholera_cases AS DOUBLE) END,
+       r.id
+FROM source s
+JOIN region r ON s.entity = r.entity AND (s.code = r.code OR s.code = '' AND r.code IS NULL);

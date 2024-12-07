@@ -1,0 +1,13 @@
+use pandemic;
+
+select
+	r.entity,
+	avg(c.number_rabies) as average,
+	min(c.number_rabies) as minimum,
+	max(c.number_rabies) as maximum
+from cases c
+join region r on c.region_id = r.id
+where c.number_rabies is not null
+group by r.entity
+order by average desc
+limit 10

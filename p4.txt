@@ -1,0 +1,8 @@
+use pandemic;
+
+SELECT
+    c.year,
+    MAKEDATE(c.year, 1) AS first_jan_date,
+    CURDATE() AS today,
+    TIMESTAMPDIFF(YEAR, MAKEDATE(c.year, 1), CURDATE()) AS years_difference
+FROM cases c;
